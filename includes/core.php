@@ -2,6 +2,7 @@
 
 require_once("connection.php");
 
+
 function clean($string)
 {
 	$string = trim($string);
@@ -13,10 +14,10 @@ function clean($string)
 
 }
 
-function adminProfile($name,$uname,$email,$password)
+function adminProfile($name,$uname,$email,$password,$role)
 {
-	$sql = " INSERT INTO profile(id,name,uname,email,password,updated) 
-	VALUES(NULL,'$name','$uname','$email','$password',CURRENT_TIMESTAMP)";
+	$sql = " INSERT INTO profile(id,name,uname,email,password,role,updated) 
+	VALUES(NULL,'$name','$uname','$email','$password','$role', CURRENT_TIMESTAMP)";
 	global $db;
 	//$query->query($db);
 	$query = mysqli_query($db,$sql) or die(mysqli_error($db));
@@ -35,6 +36,16 @@ function get_all_admin()
 	}
 	return $array;
 }
+
+function number_admin(){
+	$sql = "SELECT id FROM profile ORDER BY id ";
+	global $db;
+	$query = mysqli_query($db,$sql) or die(mysqli_error($db));
+	$row = mysqli_num_rows($query);
+	return $row;
+
+}
+
 
 
 ?>

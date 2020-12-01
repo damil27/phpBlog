@@ -1,8 +1,8 @@
 <?php 
 session_start();
 require_once("includes/core.php");
-$profiles = get_all_admin();
 
+$profiles = get_all_admin();
 
 
 
@@ -65,15 +65,22 @@ include"includes/header.php";?>
                                 <input type="email" name="email" class="form-control form-control-user" id="exampleInputEmail"
                                 placeholder="Email Address">
                             </div>
+                             
                             <div class="form-group row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <input type="password" name="password" class="form-control form-control-user"
                                     id="exampleInputPassword" placeholder="Password">
                                 </div>
-                                <div class="col-sm-6">
+                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <input type="password" name="cpassword" class="form-control form-control-user"
-                                    id="exampleRepeatPassword" placeholder="Repeat Password">
+                                    id="exampleInputPassword" placeholder="confirm password">
                                 </div>
+
+                              <div class="form-group">
+                                <input type="hidden" name="role" value="admin" class="form-control form-control-user" >
+                            </div>
+
+                                
                             </div>
                             <a href="login.html" class="btn btn-primary btn-user btn-block">
                                 Register Account
@@ -108,6 +115,9 @@ include"includes/header.php";?>
                                 
                                 
                             } 
+                            if (isset($_SESSION['success']) &&  !empty($_SESSION['success'])  ) {
+                                echo '<h2 class="alert alert-success" >'.$_SESSION['success'].'</h2>';
+                            }
                             
 
                             ?>
@@ -122,6 +132,7 @@ include"includes/header.php";?>
                                         <th>User Name</th>
                                         <th>E-mail</th>
                                         <th>Password</th>
+                                        <th>Roles</th>
                                         <th>Start Date</th>
                                         <th>Edit</th>
                                         <th>Delete</th>
@@ -140,15 +151,25 @@ include"includes/header.php";?>
                                            ?>
                                            
                                            <tr>
+                                            <td><?= $profile['id']?> </td>
                                             <td><?= $profile['name']?> </td>
                                             <td><?= $profile['uname']?> </td>
                                             <td><?= $profile['email']?> </td>
                                             <td><?= $profile['password']?> </td>
+                                            <td><?= $profile['role']?> </td>
                                             <td><?= $profile['updated']?> </td>
-                                           <td> <button type="button" class="btn  btn-danger">Edit</button></td>
-                                           <td> <button type="button" class="btn  btn-danger">Delete</button></td>
+                                           <td> <form action="admin_edit.php" method="POST"  >
+                                            <input type="text" hidden="type" name="edit_id" value="<?= $profile['id']?>">
+                                               <button type="submit" name="edit_btn" class="btn  btn-success">Edit</button>
+                                           </form>
                                             
+                                        </td>
+                                           <td>
+                                            <form method="POST" action="includes/engine.php">
+                                                <input type="hidden" name="delete_id" value="<?= $profile['id']?>" >
+                                            <button type="submit" class="btn  btn-danger" name="delete_btn" >Delete</button></td>
                                             
+                                            </form>
                                         </tr>
                                         <?php 
                                     }
@@ -178,4 +199,5 @@ include"includes/header.php";?>
 
 <!-- Footer -->
 <?php unset($_SESSION['note']); ?>
+<?php unset($_SESSION['success']); ?>
 <?php include"includes/footer.php" ; ?> 

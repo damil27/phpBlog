@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php 
+  session_start();
+  include("includes/core.php");
+
+ ?>
 
 <head>
 
@@ -9,7 +14,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Login</title>
+    <title>Login</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -21,6 +26,8 @@
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
+
+
 
 <body class="bg-gradient-primary">
 
@@ -40,16 +47,29 @@
                                 <div class="p-5">
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                                        <?php 
+                                        if (isset($_SESSION['success']) && !empty($_SESSION['success'])) {
+                                            echo '<h3 class="alert alert-success" >'.$_SESSION['success'].'</h3>';
+                                            
+                                        }
+
+                                        if (isset($_SESSION['note']) && !empty($_SESSION['note'])) {
+                                            echo '<h3 class="alert alert-danger" >'.$_SESSION['note'].'</h3>';
+                                          
+                                        }
+
+                                         ?>
                                     </div>
-                                    <form class="user">
+                                    <form class="user" method="post" action="includes/engine.php">
                                         <div class="form-group">
-                                            <input type="email" class="form-control form-control-user"
-                                                id="exampleInputEmail" aria-describedby="emailHelp"
+                                            <label >E-mail</label>
+                                            <input type="email" name="email" class="form-control form-control-user"
                                                 placeholder="Enter Email Address...">
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" class="form-control form-control-user"
-                                                id="exampleInputPassword" placeholder="Password">
+                                            <label  >Password</label>
+                                            <input type="password" name="password" class="form-control form-control-user"
+                                                 placeholder="Password">
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
@@ -58,23 +78,10 @@
                                                     Me</label>
                                             </div>
                                         </div>
-                                        <a href="index.html" class="btn btn-primary btn-user btn-block">
-                                            Login
-                                        </a>
+                                        <button type="submit" name="login_btn" class="tn btn-primary btn-user btn-blocky">Login</button>
+                                        </form>
                                         <hr>
-                                        <a href="index.html" class="btn btn-google btn-user btn-block">
-                                            <i class="fab fa-google fa-fw"></i> Login with Google
-                                        </a>
-                                        <a href="index.html" class="btn btn-facebook btn-user btn-block">
-                                            <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
-                                        </a>
-                                    </form>
-                                    <hr>
-                                    <div class="text-center">
-                                        <a class="small" href="forgot-password.html">Forgot Password?</a>
-                                    </div>
-                                    <div class="text-center">
-                                        <a class="small" href="register.html">Create an Account!</a>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -97,6 +104,10 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+    <?php 
+       unset($_SESSION['success']);
+       unset($_SESSION['note']);
+     ?>
 
 </body>
 

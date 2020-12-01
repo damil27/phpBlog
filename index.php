@@ -1,7 +1,12 @@
 <?php
 session_start();
 
+require_once("includes/core.php");
 
+  
+if (!$_SESSION['username']) {
+    header('location:login.php');
+}
  include"includes/header.php";
 
 
@@ -34,7 +39,7 @@ session_start();
                          <?php 
                             if (isset($_SESSION['success']) && $_SESSION['success'] !='') {
                                 echo '<h2 class="alert alert-success" >'.$_SESSION['success'].'</h2>';
-                                session_destroy();
+                              
                                 
                             } 
 
@@ -53,8 +58,16 @@ session_start();
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Earnings (Monthly)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                                Total registered Admin</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                               <?php
+                                               $adminTotal = number_admin();
+                                               
+                                               echo 'Total admin:'.$adminTotal;
+                                                 ?> 
+                                                
+
+                                            </div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -140,4 +153,6 @@ session_start();
             <!-- End of Main Content -->
 
             <!-- Footer -->
-           <?php include"includes/footer.php" ?> 
+           <?php 
+           unset($_SESSION['success']);
+           include"includes/footer.php" ?> 
