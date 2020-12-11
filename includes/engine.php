@@ -17,41 +17,41 @@ if (isset($_POST['registerbtn']))
 	$role = clean($_POST['role']);
 
 
-if ($password ===$cpassword) {
+	if ($password ===$cpassword) {
 
-	$errorflag = true;
-	if (!empty($name) && !empty($uname) && !empty($email) && !empty($password) && !empty($role) ) 
-	{
-		$errorflag = false;
-		
-	} else 
-	{
-		
-		$_SESSION['note'] = "One or more input left blank.";
-		header('location:../register.php');
-	}
-	
+		$errorflag = true;
+		if (!empty($name) && !empty($uname) && !empty($email) && !empty($password) && !empty($role) ) 
+		{
+			$errorflag = false;
 
-	if ($errorflag) {
-		echo $_SESSION['note'];
-		header('location: ../register.php');
-		
-	} else {
+		} else 
+		{
 
-
-		if (adminProfile($name,$uname,$email,$password,$role)) {
-				$_SESSION['success'] = "New admin successfully added";
+			$_SESSION['note'] = "One or more input left blank.";
 			header('location:../register.php');
-		} else {
-			
-			$_SESSION['note'] = "problem encounter,please try again";;
-			header('location: ../register.php');
 		}
 
-		
-	}
-	
-} else {
+
+		if ($errorflag) {
+			echo $_SESSION['note'];
+			header('location: ../register.php');
+
+		} else {
+
+
+			if (adminProfile($name,$uname,$email,$password,$role)) {
+				$_SESSION['success'] = "New admin successfully added";
+				header('location:../register.php');
+			} else {
+
+				$_SESSION['note'] = "problem encounter,please try again";;
+				header('location: ../register.php');
+			}
+
+
+		}
+
+	} else {
 		$note = "Your password does not match,try again";
 		$_SESSION['note'] = $note;
 		header('location:../register.php');
@@ -109,7 +109,7 @@ if (isset($_POST['delete_btn'])) {
 	if ($query) {
 		$_SESSION['success'] = "Your data was successfully delete from database";
 		header('location:../register.php');
-	
+
 	}else{
 		$_SESSION['note'] = "something went wrong, please try again";
 		header('location: ../register.php');
@@ -148,8 +148,134 @@ if (isset($_POST['logout_btn'])) {
 	header('location:../login.php');
 }
 
+//  about page engine here
+if (isset($_POST['about_btn'])) {
+
+	$title = clean($_POST['title']);
+	$subtitle = clean($_POST['subtitle']);
+	$description = clean($_POST['description']);
+	$link = clean($_POST['link']);
 
 
+
+	if (!empty($title) && !empty($subtitle) && !empty($description) && !empty($link) ) {
+
+		if (add_about($title,$subtitle,$description,$link)) {
+			$_SESSION['success'] = "Your About content is added successfully";
+			header('location:../about.php');
+		}
+		
+	}
+	else{
+		$_SESSION['note'] ="one or more field left empty";
+		header('location: ../about.php');
+	}
+}
+
+
+
+
+
+if (isset($_POST['update_aboutbtn'])) {
+	$editTitle = clean($_POST['editTitle']);
+	$editSubtitle =clean($_POST['editSubtitle']);
+	$editDescription =clean($_POST['editDescription']);
+	$editLink = $_POST['editLink'];
+	$id = $_POST['edit_id'];
+	$sql = " UPDATE ABOUT set title = '$editTitle', subtitle = '$editSubtitle', description = '$editDescription', link = '$editLink' where id ='$id'  ";
+	global $db;
+	$query = mysqli_query($db,$sql)or die(mysqli_error($db)) ;
+	if ($query) {
+		$_SESSION['success'] = "Your data was successfully updated";
+		header('location:../about.php');
+	}else{
+		$_SESSION['note'] = "Your Data is not yet updated";
+		header('location:../about.php');
+	}
+}
+
+
+
+
+if (isset($_POST['uploadbtn'])) 
+{
+	$name = clean($_POST['name']);
+	$designation = clean($_POST['designation']);
+	$description = clean($_POST['description']);
+	$allowed = array(IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_GIF);
+	$ext =exif_imagetype($_FILES['filename'] ['tmp_name']);
+	if (!empty($name) && !empty($designation) && !empty($description)) 
+	 {
+	 	$filename = $_FILES['filename']['name'];
+	 	$filepath = '../img/faculty/'.$filename ;
+	 	$tmp = $_FILES['filename']['tmp_name'];
+	 	move_uploaded_file($tmp, $filepath);
+	 	if (in_array($ext, $allowed)) 
+	 	{
+	 		if (create_faculty($name,$designation,$description,$filename)) 
+	 		{
+	 			$_SESSION['success'] = "Faculty data successfully added";
+	 			header('location:../faculty.php');
+	 		}
+	 		else
+	 		{
+	 			$_SESSION['note'] = "something went wrong, please try again";
+	 			header('location:../faculty.php');
+	 		}
+	 	}
+	 	else
+	 	{
+	 		$_SESSION['note'] = "invallid file type, only image is allowed";
+	 		header('location:../faculty.php');
+	 	}
+
+	 } 
+	 else
+	 {
+	 	$_SESSION['note'] = "one or more field is/are empty";
+	 	header('location:../faculty.php');
+	 }
+}
+
+
+if (isset($_POST['update_facultybtn'])) {
+	$name = clean($_POST['edit_name']);
+	$designation = clean($_POST['edit_designation']);
+	$description = clean($_POST['edit_description']);
+	
+	$id = $_POST['edit_id'];
+	
+	$sql = " UPDATE faculty SET name = '$name', designation ='$designation', description = '$description' where id='$id' ";
+	global $db;
+	$query = mysqli_query($db,$sql) or die(mysqli_error($db));
+	if ($query) {
+		$_SESSION['success'] = "Data successfully updated";
+		header('location:../faculty.php');
+
+	}
+	else{
+		$_SESSION['note'] = " something went wrong, please try again ";
+		header('location:../faculty.php');
+	}
+}
+
+
+
+if (isset($_POST['faculty_delete'])) {
+	
+	$id = $_POST['fa_del_id'];
+	$sql = " DELETE  FROM faculty where id='$id' ";
+	global $db;
+	$query = mysqli_query($db,$sql) or die(mysqli_error($db));
+	if ($query) {
+		$_SESSION['success'] = "data successully deleted from database";
+		header('location:../faculty.php');
+	}
+	else{
+		$_SESSION['note'] = "something went wrong ,please try again";
+		header('location:../faculty.php');
+	}
+}
 
 
 ?>
